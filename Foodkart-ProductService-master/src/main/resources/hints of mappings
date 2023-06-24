@@ -1,0 +1,37 @@
+class Product{
+@Id
+int productId;
+String productName;
+@ManytoOne
+@JoinColumn(name="cartId")
+Cart cart;
+
+ 
+
+...
+
+ 
+
+}
+class Cart{
+int    cartId
+@OneToMany(mappedBy="cart")
+List<Product> products;
+}
+
+ 
+
+class Order{
+@Id
+int orderId;
+
+ 
+
+@OneToOne
+@JoinColumn(name="cartId");
+Cart cart;
+}
+
+ 
+
+

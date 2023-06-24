@@ -1,0 +1,77 @@
+#server.port=8083
+#
+#eureka.client.register-with-eureka=true
+#eureka.client.fetch-registry=true
+#eureka.instance.prefer-ip-address= true
+#eureka.client.service-url.defaultZone= http://localhost:8761/eureka
+#
+#spring.application.name=api-gateway
+#
+#spring.cloud.gateway.enabled=true
+#spring.cloud.gateway.routes[0].id=USER-SERVICE
+#spring.cloud.gateway.routes[0].uri=http://localhost:8080/user-service
+#spring.cloud.gateway.routes[0].predicates[0]=Path=/login-rest/**
+#spring.cloud.gateway.routes[0].predicates[1]=Path=/address-rest/**
+#
+#spring.cloud.gateway.routes[1].id=PRODUCT-SERVICE
+#spring.cloud.gateway.routes[1].uri=http://localhost:8081/product-service/
+#spring.cloud.gateway.routes[1].predicates[0]=Path=/product-rest/**
+#spring.cloud.gateway.routes[1].predicates[1]=Path=/cartitem-rest/**
+#spring.cloud.gateway.routes[1].predicates[2]=Path=/cart-rest/**
+#
+#
+#
+#spring.cloud.gateway.routes[2].id=PRODUCT-SERVICE
+#spring.cloud.gateway.routes[2].uri=http://localhost:8082/order-service
+#spring.cloud.gateway.routes[2].predicates[0]=Path=/order-rest/**
+
+server:
+  port: 8083
+  
+ 
+
+spring:
+  application:
+    name: API-GATEWAY
+
+  cloud:
+ 
+    gateway:
+      routes:
+        - id: user-service
+          uri: http://localhost:8080/
+          predicates:
+            - Path=/login-rest/**, /address-rest/**
+
+
+        - id: product-service
+          uri: http://localhost:8081/
+          predicates:
+            - Path=/product-rest/**, /cartitem-rest/**, /cart-rest/**
+
+
+
+        - id: order-service
+          uri: http://localhost:8082/
+          predicates:
+            - Path=/order-rest/**
+            
+   
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+
+
+
+
+
+
+
