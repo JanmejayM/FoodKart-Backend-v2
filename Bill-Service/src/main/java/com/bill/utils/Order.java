@@ -1,56 +1,38 @@
-package com.bill.entity;
+package com.bill.utils;
 
 import java.util.ArrayList;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import com.bill.utils.OrderDetails;
 
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 
-@Entity
-@Table(name = "order_table")
+
 public class Order {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	
 	private long id;
 	
-	@Column(name="user_id",nullable = false)
-	@NotNull
+	
 	private long userid;
 	
-	@Column(name="summary",nullable = false,columnDefinition = "TEXT")
-	@NotEmpty
+	
 	private String summary;
 	
 	
-	@Column(name="address",nullable = false)
-	@NotEmpty
+
 	private String address;
 	
 	
-	@Temporal(TemporalType.DATE)
 	private Date calendarDate;
 	
-	@Column(name="price",nullable = false)
-	@NotNull
+	
 	private long price;
 	
 	
-	@Transient
+	
 	private List<OrderDetails> description=new ArrayList<>();
 
 	public long getId() {
