@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.Valid;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,110 +23,93 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.order.config.RabbitMQProducer;
 import com.order.entity.Order;
 import com.order.exceptions.OrderNotFoundException;
 import com.order.service.OrderService;
 import com.order.utils.CartItem;
 import com.order.utils.Revenue;
 
-
 //@CrossOrigin("*")
 @RequestMapping("order-rest")
 @RestController
 public class OrderController {
-	
+
 	@Autowired
 	OrderService orderservice;
 	
-	
-    private static final Logger logger = LogManager.getLogger(OrderController.class);
+	@Autowired
+	RabbitMQProducer producer;
 
-	
+	private static final Logger logger = LogManager.getLogger(OrderController.class);
+
 	@GetMapping("/getUserOrder/{id}")
-	public ResponseEntity<List<Order>> getByUser(@PathVariable long id)
-	{
-    	logger.info("Fetch all User Order By ID Endpoint");
-		List<Order>order= orderservice.getAllOrderOfUser(id);
-		
-		return new ResponseEntity<List<Order>>(order,HttpStatus.OK);
-		
+	public ResponseEntity<List<Order>> getByUser(@PathVariable long id) {
+		logger.info("Fetch all User Order By ID Endpoint");
+		List<Order> order = orderservice.getAllOrderOfUser(id);
+
+		return new ResponseEntity<List<Order>>(order, HttpStatus.OK);
+
 	}
-	
+
 	@GetMapping("/get/{id}")
-	public ResponseEntity<Order> getByOrder(@PathVariable long id)
-	{
-    	logger.info("Fetch Order By ID Endpoint");
+	public ResponseEntity<Order> getByOrder(@PathVariable long id) {
+		logger.info("Fetch Order By ID Endpoint");
 
-		return new ResponseEntity<Order>(orderservice.getOrderByOrderId(id),HttpStatus.OK);
+		return new ResponseEntity<Order>(orderservice.getOrderByOrderId(id), HttpStatus.OK);
 	}
-	
-	
+
 	@GetMapping("/getall")
-	public ResponseEntity<List<Order>> getAllOrder()
-	{
-    	logger.info("Inside All Order");
+	public ResponseEntity<List<Order>> getAllOrder() {
+		logger.info("Inside All Order");
 
-		return new ResponseEntity<List<Order>>(orderservice.getAllOrders(),HttpStatus.OK);
+		return new ResponseEntity<List<Order>>(orderservice.getAllOrders(), HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/addOrder/{id}")
-	public void addOrder( @RequestParam String address,@PathVariable long id)
-	{
-    
-    	
-    	logger.info("In Add Order Endpoint");
-    	
-    	logger.info(address);
-    	
-    	if(address.equals(""))
-    	{
-    		throw new OrderNotFoundException("Invalid Address");
-    	}
-    	
+	public void addOrder(@RequestParam String address, @PathVariable long id) {
 
-	String url = "http://localhost:8081/cartitem-rest/fetchCart/"+String.valueOf(id);
+		logger.info("In Add Order Endpoint");
+
+		logger.info(address);
+
+		if (address.equals("")) {
+			throw new OrderNotFoundException("Invalid Address");
+		}
+
+		String url = "http://localhost:8081/cartitem-rest/fetchCart/" + String.valueOf(id);
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<List<CartItem>> response = restTemplate.exchange(
-		    url,
-		    HttpMethod.GET,
-		    null,
-		    new ParameterizedTypeReference<List<CartItem>>(){});
+		ResponseEntity<List<CartItem>> response = restTemplate.exchange(url, HttpMethod.GET, null,
+				new ParameterizedTypeReference<List<CartItem>>() {
+				});
 		List<CartItem> objects = response.getBody();
-		
-		
-		
-		orderservice.addOrder(objects,address);
-		
-		
 
-		
+		orderservice.addOrder(objects, address);
+
 	}
-    
-    @GetMapping("/getdailyRevenue")
-    public Revenue getRevenue(@RequestParam("date") 
-    @DateTimeFormat(pattern = "yyyy-MM-dd") Date date)
-    {
-    	
-    	logger.info("In Daily Revenue Endpoint");
 
-    	return orderservice.getRevenue(date);
-    }
-    
-    @GetMapping("/getRevenueMonthly")
-    public Revenue getMonthlyRevenue(@RequestParam("fromdate") 
-    @DateTimeFormat(pattern = "yyyy-MM-dd") Date date1,@RequestParam("todate") 
-    @DateTimeFormat(pattern = "yyyy-MM-dd") Date date2)
-    {
-    	logger.info("In Monthly Revenue Endpoint");
+	@GetMapping("/getdailyRevenue")
+	public Revenue getRevenue(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
 
-    	return orderservice.getRevenueMonthly(date1, date2);
-    }
-    
-    
-    
- 
-	
-	
+		logger.info("In Daily Revenue Endpoint");
 
+		return orderservice.getRevenue(date);
+	}
+
+	@GetMapping("/getRevenueMonthly")
+	public Revenue getMonthlyRevenue(@RequestParam("fromdate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date1,
+			@RequestParam("todate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date2) {
+		logger.info("In Monthly Revenue Endpoint");
+
+		return orderservice.getRevenueMonthly(date1, date2);
+	}
+
+	@GetMapping("/getBill")
+	public void getBill(@RequestParam("orderid") long orderid) {
+		producer.sendMessage(String.valueOf(orderid));
+
+		logger.info("In Get Bill");
+
+	}
 
 }
