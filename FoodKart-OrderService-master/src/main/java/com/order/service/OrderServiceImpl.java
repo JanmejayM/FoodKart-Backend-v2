@@ -115,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
 
 		for (String s : subSummary) {
 			String[] subs = s.split(",");
-			order.getDescription().add(new OrderDetails(subs[0], Integer.parseInt(subs[1]), Long.parseLong(subs[2])));
+			order.getDescription().add(new OrderDetails(subs[0], Integer.parseInt(subs[2]), Long.parseLong(subs[1])));
 		}
 
 		return order;
