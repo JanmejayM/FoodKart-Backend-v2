@@ -106,9 +106,9 @@ public class OrderController {
 
 	@GetMapping("/getBill")
 	public void getBill(@RequestParam("orderid") long orderid) {
-		producer.sendMessage(String.valueOf(orderid));
+		producer.sendMessage(orderservice.getOrderByOrderId(orderid));
 
-		logger.info("In Get Bill");
+		logger.info("In Get Bill api");
 
 	}
 
