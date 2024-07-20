@@ -1,8 +1,6 @@
 package com.user.serviceTest;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.never;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,38 +9,38 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.user.dao.UserDao;
 import com.user.entity.User;
 import com.user.exception.UserAlreadyExistsException;
 import com.user.exception.UserNotFoundException;
-import com.user.service.UserService;
+import com.user.service.UserServiceImpl;
 
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
 class UserServiceTest {
 	
 	
-	@Autowired
-	private UserService userservice;
+	@InjectMocks
+	private UserServiceImpl userservice;
 	
 	
-	@MockBean
+	@Mock
 	private UserDao userdao;
 	
 	
-	@MockBean
+	@Mock
 	private PasswordEncoder pswd;
 
 	@Test

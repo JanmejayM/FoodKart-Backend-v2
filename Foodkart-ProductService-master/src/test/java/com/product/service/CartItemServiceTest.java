@@ -1,8 +1,10 @@
 package com.product.service;
 
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,15 +25,15 @@ import com.product.entity.CartItem;
 import com.product.entity.Product;
 import com.product.utils.User;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
 public class CartItemServiceTest {
 	
-	@Autowired
-	private CartItemService cartitemservice;
+	@InjectMocks
+	private CartItemServiceImpl cartitemservice;
 	
 	
-	@MockBean
+	@Mock
 	private CartItemDao cartitemdao;
 	
 	@Mock

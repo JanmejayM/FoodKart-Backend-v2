@@ -21,112 +21,93 @@ import com.user.exception.RestTemplateErrorHandler;
 import com.user.utils.AddressOnly;
 
 @Service
-public class AddressServiceImpl implements AddressService{
-	
+public class AddressServiceImpl implements AddressService {
+
 	@Autowired
 	AddressDao addressdao;
-	
+
 	@Autowired
 	RestTemplate restTemplate;
-	
-    private static final Logger logger = LogManager.getLogger(AddressServiceImpl.class);
 
+	private static final Logger logger = LogManager.getLogger(AddressServiceImpl.class);
 
 	@Override
-	public List<Address> fetchByUser(long id) throws UserNotFoundException{
+	public List<Address> fetchByUser(long id) throws UserNotFoundException {
 		// TODO Auto-generated method stub
-		List<Address>res=new ArrayList<>();
-		RestTemplateBuilder builder=new RestTemplateBuilder();
+		List<Address> res = new ArrayList<>();
 
-		RestTemplate restTemplate=new RestTemplate();
-		 restTemplate = builder.errorHandler(new RestTemplateErrorHandler()).build();
-		 User user=new User();
-		 
-			 user=restTemplate.getForObject("http://localhost:8080/login-rest/fetch/"+String.valueOf(id), User.class);
-			 
-			 logger.info("User fetched="+user);
-			 if(user.getUsername()==null)
-			 {
-				 logger.warn("Invalid user");
-					throw new UserNotFoundException("Invalid User");
+		User user = new User();
 
-			 }
-				addressdao.findAll().stream().filter(u->u.getUser().getId()==id).forEach(ar->res.add(ar));
-				return res;
+		user = restTemplate.getForObject("http://localhost:8080/login-rest/fetch/" + String.valueOf(id), User.class);
 
+		logger.info("User fetched=" + user);
+		if (user.getUsername() == null) {
+			logger.warn("Invalid user");
+			throw new UserNotFoundException("Invalid User");
 
-	
-		
+		}
+		addressdao.findAll().stream().filter(u -> u.getUser().getId() == id).forEach(ar -> res.add(ar));
+		return res;
+
 	}
 
 	@Override
-	public Address addToUser(long id,AddressOnly address) throws UserNotFoundException{
+	public Address addToUser(long id, AddressOnly address) throws UserNotFoundException {
 		// TODO Auto-generated method stub
-		
 
-		Address add=new Address();
-		
-		RestTemplateBuilder builder=new RestTemplateBuilder();
+		Address add = new Address();
 
-		RestTemplate restTemplate=new RestTemplate();
-		 restTemplate = builder.errorHandler(new RestTemplateErrorHandler()).build();
-		 User user=new User();
-		 
-		 user=restTemplate.getForObject("http://localhost:8080/login-rest/fetch/"+String.valueOf(id), User.class);
-		 logger.info("User fetched="+user);
+		User user = new User();
 
-		 
-		 if(user.getUsername()!=null)
-		 {
-			 logger.info("Valid user");
+		user = restTemplate.getForObject("http://localhost:8080/login-rest/fetch/" + String.valueOf(id), User.class);
+		logger.info("User fetched=" + user);
 
-		 add.setCity(address.getCity());
+		if (user.getUsername() != null) {
+			logger.info("Valid user");
+
+			add.setCity(address.getCity());
 			add.setHouseno(address.getHouseno());
 			add.setPincode(address.getPincode());
 			add.setState(address.getState());
 			add.setStreet(address.getStreet());
 			add.setUser(user);
-			 return addressdao.save(add);
-		 }
-
-		 logger.warn("Invalid user");
-
-	     throw new UserNotFoundException("User Not Valid");
-	
-}
-		
-	@Override
-	public Address updateAddress(Address address) throws InvalidAddressException{
-		
-		if(addressdao.findById(address.getAddress_id()).isPresent())
-		{
-			 logger.info("Valid Address");
-
-		    return addressdao.save(address);
+			return addressdao.save(add);
 		}
-		 logger.warn("Invalid Address");
 
-		throw new InvalidAddressException("Invalid Address");
-		
+		logger.warn("Invalid user");
+
+		throw new UserNotFoundException("User Not Valid");
+
 	}
 
 	@Override
-	public void deleteAddress(long id) throws InvalidAddressException{
+	public Address updateAddress(Address address) throws InvalidAddressException {
+
+		if (addressdao.findById(address.getAddress_id()).isPresent()) {
+			logger.info("Valid Address");
+
+			return addressdao.save(address);
+		}
+		logger.warn("Invalid Address");
+
+		throw new InvalidAddressException("Invalid Address");
+
+	}
+
+	@Override
+	public void deleteAddress(long id) throws InvalidAddressException {
 		// TODO Auto-generated method stub
-		
-		if(addressdao.findById(id).isPresent())
-		{
-			 logger.info("Valid Address");
 
-		  addressdao.deleteById(id);
-		}
-		else {
-			 logger.warn("Invalid Address");
+		if (addressdao.findById(id).isPresent()) {
+			logger.info("Valid Address");
 
-		throw new InvalidAddressException("Invalid Address");
+			addressdao.deleteById(id);
+		} else {
+			logger.warn("Invalid Address");
+
+			throw new InvalidAddressException("Invalid Address");
 		}
 
 	}
-	
 
 }

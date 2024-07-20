@@ -19,70 +19,53 @@ import com.product.exception.RestTemplateErrorHandler;
 import com.product.exception.UserNotFoundException;
 import com.product.utils.User;
 
-
-
 @Service
-public class CartItemServiceImpl implements CartItemService{
-	@Autowired 
+public class CartItemServiceImpl implements CartItemService {
+	@Autowired
 	CartItemDao cartitemdao;
-	
-	
-    private static final Logger logger = LogManager.getLogger(CartItemServiceImpl.class);
 
-	
-	   RestTemplateBuilder builder=new RestTemplateBuilder();
-		RestTemplate restTemplate=new RestTemplate();
+	private static final Logger logger = LogManager.getLogger(CartItemServiceImpl.class);
 
-
-
-
+	@Autowired
+	RestTemplate restTemplate;
 
 	@Override
 	public void updateQty(CartItem cartitem, int quantity) {
 		// TODO Auto-generated method stub
-		
-    	logger.info("Inside UpdateCartItem of CartItemServiceImpl");
+
+		logger.info("Inside UpdateCartItem of CartItemServiceImpl");
 
 		cartitem.setQuantity(quantity);
 		cartitemdao.save(cartitem);
-		
+
 	}
 
 	@Override
 	public void remove(CartItem cartitem) {
 		// TODO Auto-generated method stub
-		
-    	logger.info("Inside removeCartItem of CartItemServiceImpl");
+
+		logger.info("Inside removeCartItem of CartItemServiceImpl");
 
 		cartitemdao.delete(cartitem);
-		
+
 	}
-
-
 
 	@Override
 	public void addProduct(Product product, long id) {
-		
-		
-
-		restTemplate = builder.errorHandler(new RestTemplateErrorHandler()).build();
 
 		User user = new User();
-		
-    	logger.info("Inside  addProduct of CartItemServiceImpl");
 
+		logger.info("Inside  addProduct of CartItemServiceImpl");
 
 		user = restTemplate.getForObject("http://localhost:8080/login-rest/fetch/" + String.valueOf(id), User.class);
 
 		if (user.getFirstname() == null) {
-	    	logger.warn("Invalid User ");
+			logger.warn("Invalid User ");
 
 			throw new UserNotFoundException("Invalid User");
 		}
 
 		List<CartItem> cartitems = cartitemdao.findAllByCartProduct(id, false, product);
-
-		
 
 		if (cartitems.size() != 0) {
 			cartitems.stream().forEach((cart) -> {
@@ -104,19 +87,16 @@ public class CartItemServiceImpl implements CartItemService{
 
 			cartitemdao.save(cartItem);
 		}
-		
-		
+
 	}
 
 	@Override
 	public List<CartItem> fetchByUserIdCart(long id) {
 		// TODO Auto-generated method stub
-		restTemplate = builder.errorHandler(new RestTemplateErrorHandler()).build();
 		User user = new User();
 		List<CartItem> ls = new ArrayList<>();
-		
-    	logger.info("Inside Inside fetchByUserIdCart of CartItemServiceImpl");
 
+		logger.info("Inside Inside fetchByUserIdCart of CartItemServiceImpl");
 
 		try {
 
@@ -124,15 +104,15 @@ public class CartItemServiceImpl implements CartItemService{
 					User.class);
 			cartitemdao.findAllByuseridandInorder(id, false).stream().forEach(cartitem -> ls.add(cartitem));
 		} catch (Exception ex) {
-			
-	    	logger.warn("Invalid User");
+
+			logger.warn("Invalid User");
 
 			throw new UserNotFoundException("User Invalid");
 
 		}
 
 		return ls;
-		
+
 	}
 
 	@Override
@@ -140,19 +120,16 @@ public class CartItemServiceImpl implements CartItemService{
 		// TODO Auto-generated method stub
 		List<CartItem> ls = new ArrayList<>();
 
-		restTemplate = builder.errorHandler(new RestTemplateErrorHandler()).build();
 		User user = new User();
-    	logger.info("Inside Inside OnCheckout of CartItemServiceImpl");
-
+		logger.info("Inside Inside OnCheckout of CartItemServiceImpl");
 
 		user = restTemplate.getForObject("http://localhost:8080/login-rest/fetch/" + String.valueOf(id), User.class);
 
 		if (user.getFirstname() == null) {
-			
-	    	logger.warn("Invalid User");
+
+			logger.warn("Invalid User");
 
 			throw new UserNotFoundException("Invalid User");
-			
 
 		}
 
@@ -166,18 +143,12 @@ public class CartItemServiceImpl implements CartItemService{
 
 	@Override
 	public void deleteProduct(long id) {
-		
-    	logger.info("Inside deleteProduct of CartItemServiceImpl");
 
-		
+		logger.info("Inside deleteProduct of CartItemServiceImpl");
+
 		cartitemdao.findAll().stream().filter(cartitem -> cartitem.getProduct().getId() == id)
 				.forEach(cartitem -> cartitemdao.delete(cartitem));
 
 	}
-		 
-		
-	}
-	
-	
 
-
+}
