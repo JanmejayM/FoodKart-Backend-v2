@@ -18,7 +18,9 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,21 +32,22 @@ import com.order.entity.Order;
 import com.order.exceptions.OrderNotFoundException;
 import com.order.exceptions.UserNotFoundException;
 import com.order.service.OrderService;
+import com.order.service.OrderServiceImpl;
 import com.order.utils.CartItem;
 import com.order.utils.OrderDetails;
 import com.order.utils.Product;
 import com.order.utils.Revenue;
 import com.order.utils.User;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
 public class OrderServiceTest {
 	
 	
-	@Autowired
-	private OrderService orderservice;
+	@InjectMocks
+	private OrderServiceImpl orderservice;
 	
-	@MockBean
+	@Mock
 	private OrderDao orderdao;
 	
 	@Mock
@@ -92,7 +95,6 @@ public class OrderServiceTest {
         // Mock user response
         User user = new User();
         user.setId(1L);
-        user.setUsername("omm");
         
         when(restTemplate.getForObject("http://localhost:8080/login-rest/fetch/1", User.class)).thenReturn(user);
 
@@ -114,7 +116,7 @@ public class OrderServiceTest {
         when(orderdao.findByuserid(1)).thenReturn(mockOrders);
 
 Assertions.assertThrows(UserNotFoundException.class, () -> {
-    orderservice.getAllOrderOfUser(123456L);
+    orderservice.getAllOrderOfUser(1);
 
 
         });

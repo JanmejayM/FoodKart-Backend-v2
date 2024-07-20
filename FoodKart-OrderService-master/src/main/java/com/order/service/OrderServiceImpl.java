@@ -48,9 +48,6 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<Order> getAllOrderOfUser(long uid) throws UserNotFoundException {
 		// TODO Auto-generated method stub
-		RestTemplateBuilder builder = new RestTemplateBuilder();
-
-		restTemplate = builder.errorHandler(new RestTemplateErrorHandler()).build();
 		
 		logger.info("In Get all Orders of User Service");
 		User user = new User();

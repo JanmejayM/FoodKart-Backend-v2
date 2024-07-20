@@ -35,12 +35,9 @@ public class CartServiceImpl implements CartService{
     private static final Logger logger = LogManager.getLogger(CartServiceImpl.class);
 
 
-	RestTemplateBuilder builder = new RestTemplateBuilder();
 
 	public Cart addCart(long id, List<CartItem> cartitem) {
 
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate = builder.errorHandler(new RestTemplateErrorHandler()).build();
 		User user = new User();
 
 		
@@ -82,8 +79,6 @@ public class CartServiceImpl implements CartService{
 	@Override
 	public Cart fetchCart(long id) {
 		// TODO Auto-generated method stub
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate = builder.errorHandler(new RestTemplateErrorHandler()).build();
 		User user = new User();
 		user = restTemplate.getForObject("http://localhost:8080/login-rest/fetch/" + String.valueOf(id), User.class);
 
