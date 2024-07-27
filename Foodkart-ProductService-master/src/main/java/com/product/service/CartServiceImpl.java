@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -32,6 +33,9 @@ public class CartServiceImpl implements CartService{
 	@Autowired
 	RestTemplate restTemplate;
 	
+	@Value("${gatewayHost}")
+	private String gatewayHost;
+	
     private static final Logger logger = LogManager.getLogger(CartServiceImpl.class);
 
 
@@ -43,7 +47,7 @@ public class CartServiceImpl implements CartService{
 		
     	logger.info("Inside addCart of CartServiceImpl");
 
-		user = restTemplate.getForObject("http://localhost:8080/login-rest/fetch/" + String.valueOf(id), User.class);
+		user = restTemplate.getForObject(gatewayHost+"/login-rest/fetch/" + String.valueOf(id), User.class);
 		if (user.getFirstname() == null) {
 			
 			logger.warn("Invalid User");
@@ -80,7 +84,7 @@ public class CartServiceImpl implements CartService{
 	public Cart fetchCart(long id) {
 		// TODO Auto-generated method stub
 		User user = new User();
-		user = restTemplate.getForObject("http://localhost:8080/login-rest/fetch/" + String.valueOf(id), User.class);
+		user = restTemplate.getForObject(gatewayHost+"/login-rest/fetch/" + String.valueOf(id), User.class);
 
 		if (user.getFirstname() == null) {
 			logger.warn("Invalid User");
@@ -105,7 +109,7 @@ public class CartServiceImpl implements CartService{
 
 		Cart cart = cartdao.save(ls);
 		if (cart != null) {
-			restTemplate.postForEntity("http://localhost:8081/cartitem-rest/delete", c, null);
+			restTemplate.postForEntity(gatewayHost+"/cartitem-rest/delete", c, null);
 		}
 		return cart;
 

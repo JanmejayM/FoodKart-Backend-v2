@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,8 @@ public class ProductServiceImpl implements ProductService{
 	@Autowired
 	RestTemplate restTemplate;
 	
+	@Value("${gatewayHost}")
+	private String gatewayHost;
 	
     private static final Logger logger = LogManager.getLogger(ProductServiceImpl.class);
 
@@ -67,8 +70,8 @@ public class ProductServiceImpl implements ProductService{
 			
 			logger.info("Inside  validProduct in delete ProductServiceImpl");
 
-			restTemplate.delete("http://localhost:8081/cart-rest/deleteProduct/"+String.valueOf(id));
-			restTemplate.delete("http://localhost:8081/cartitem-rest/deleteProduct/"+String.valueOf(id));
+			restTemplate.delete(gatewayHost+"/cart-rest/deleteProduct/"+String.valueOf(id));
+			restTemplate.delete(gatewayHost+"/cartitem-rest/deleteProduct/"+String.valueOf(id));
 			
 			productdao.deleteById(id);
 			return new ResponseEntity<>(

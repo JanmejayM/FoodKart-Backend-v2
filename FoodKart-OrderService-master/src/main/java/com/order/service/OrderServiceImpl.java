@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -41,6 +42,9 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	RestTemplate restTemplate;
 	
+	@Value("${gatewayHost}")
+	private String gatewayHost;
+	
 	
     private static final Logger logger = LogManager.getLogger(OrderServiceImpl.class);
 
@@ -52,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
 		logger.info("In Get all Orders of User Service");
 		User user = new User();
 
-		user = restTemplate.getForObject("http://localhost:8080/login-rest/fetch/" + String.valueOf(uid), User.class);
+		user = restTemplate.getForObject(gatewayHost+"/login-rest/fetch/" + String.valueOf(uid), User.class);
         
 		
 		logger.info("User fetched"+user);
@@ -156,7 +160,7 @@ public class OrderServiceImpl implements OrderService {
 		if(o!=null)
 		{
 		restTemplate.postForEntity(
-				"http://localhost:8081/cartitem-rest/onCheckout/" + String.valueOf(id), null, null);
+				gatewayHost+"/cartitem-rest/onCheckout/" + String.valueOf(id), null, null);
 		}
 
 	}

@@ -39,20 +39,22 @@ spring:
     gateway:
       routes:
         - id: user-service
-          uri: http://localhost:8080/
+          uri: lb://user-service/
           predicates:
             - Path=/login-rest/**, /address-rest/**
 
 
+
+
         - id: product-service
-          uri: http://localhost:8081/
+          uri: lb://product-service/
           predicates:
             - Path=/product-rest/**, /cartitem-rest/**, /cart-rest/**
 
 
 
         - id: order-service
-          uri: http://localhost:8082/
+          uri: lb://order-service/
           predicates:
             - Path=/order-rest/**
             
@@ -66,7 +68,10 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     service-url:
+#       defaultZone: http://host.docker.internal:8761/eureka/
+    
       defaultZone: http://localhost:8761/eureka
+
 
 
 

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -191,7 +192,7 @@ class AddressServiceTest {
 		add.setStreet("Bishram Nagar Link Road");
 		add.setUser(user);
 
-		when(restTemplate.getForObject("http://localhost:8080/login-rest/fetch/1", User.class)).thenReturn(user);
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class))).thenReturn(user);
 		when(addressdao.findAll()).thenReturn(Stream.of(add).collect(Collectors.toList()));
 
 		addressservice.fetchByUser(user.getId());
@@ -211,7 +212,7 @@ class AddressServiceTest {
 		user.setId(1);
 	
 
-		when(restTemplate.getForObject("http://localhost:8080/login-rest/fetch/1", User.class)).thenReturn(user1);
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class))).thenReturn(user1);
 		when(addressdao.findAll()).thenReturn(Stream.of(add).collect(Collectors.toList()));
 
 		Assertions.assertThrows(UserNotFoundException.class, () -> {
@@ -236,7 +237,7 @@ class AddressServiceTest {
 
 		// when(addressdao.save(add)).thenReturn(add);
 
-		when(restTemplate.getForObject("http://localhost:8080/login-rest/fetch/1", User.class)).thenReturn(user);
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class))).thenReturn(user);
 
 		addressdao.save(add);
 
@@ -258,7 +259,7 @@ class AddressServiceTest {
 
 		// when(addressdao.save(add)).thenReturn(add);
 
-		when(restTemplate.getForObject("http://localhost:8080/login-rest/fetch/1", User.class)).thenReturn(new User());
+		when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class))).thenReturn(new User());
 		// when(user.getUsername()).thenReturn(null);
 
 		// when(addressdao.save(add)).thenReturn(add);
