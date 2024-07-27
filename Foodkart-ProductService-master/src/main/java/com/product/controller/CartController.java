@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,8 @@ public class CartController {
 	@Autowired
 	CartService cartservice;
 	
+	@Value("${gatewayHost}")
+	private String gatewayHost;
 	
     private static final Logger logger = LogManager.getLogger(CartController.class);
 
@@ -44,7 +47,7 @@ public class CartController {
     	
     	logger.info("In AddCart of CartController endpoint");
     	
-		String url = "http://localhost:8081/cartitem-rest/fetchCart/"+String.valueOf(id);
+		String url = gatewayHost+"/cartitem-rest/fetchCart/"+String.valueOf(id);
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<List<CartItem>> response = restTemplate.exchange(
 		    url,

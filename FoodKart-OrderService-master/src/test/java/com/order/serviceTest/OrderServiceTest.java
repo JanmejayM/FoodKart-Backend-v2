@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -60,7 +61,7 @@ public class OrderServiceTest {
         user.setId(1L);
         user.setUsername("omm");
         
-        when(restTemplate.getForObject("http://localhost:8080/login-rest/fetch/1", User.class)).thenReturn(user);
+        when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class))).thenReturn(user);
 
         // Mock order data
         Order order1 = new Order();
@@ -96,7 +97,7 @@ public class OrderServiceTest {
         User user = new User();
         user.setId(1L);
         
-        when(restTemplate.getForObject("http://localhost:8080/login-rest/fetch/1", User.class)).thenReturn(user);
+        when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class))).thenReturn(user);
 
         // Mock order data
         Order order1 = new Order();

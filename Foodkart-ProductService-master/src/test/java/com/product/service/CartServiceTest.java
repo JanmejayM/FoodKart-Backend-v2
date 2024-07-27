@@ -80,7 +80,7 @@ public class CartServiceTest {
 	{
 		User u=new User();
 		u.setFirstname("omm");
-		when(restTemplate.getForObject("http://localhost:8080/login-rest/fetch/" + String.valueOf(1), User.class)).thenReturn(u);
+		when(restTemplate.getForObject(anyString(), eq(User.class))).thenReturn(u);
 		
         cartservice.fetchCart(1);		
 		verify(cartdao,times(1)).getByuserid(1);
@@ -94,8 +94,7 @@ public class CartServiceTest {
 		User mockUser = new User();
 		mockUser.setFirstname(null);
 		String userId = "ds";
-		String fetchUrl = "http://localhost:8080/login-rest/fetch/" + String.valueOf(userId);
-		when(restTemplate.getForObject(fetchUrl, User.class)).thenReturn(mockUser);
+		when(restTemplate.getForObject(anyString(), eq(User.class))).thenReturn(mockUser);
 
 
 

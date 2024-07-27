@@ -1,18 +1,7 @@
 package com.product.service;
 
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -20,6 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.client.RestTemplate;
+
 import com.product.dao.CartItemDao;
 import com.product.entity.CartItem;
 import com.product.entity.Product;
@@ -165,7 +162,7 @@ public class CartItemServiceTest {
 	    user.setFirstname("John");
 
 	    // Mock the getForObject method to return the User object
-	    Mockito.when(restTemplate.getForObject("http://localhost:8080/login-rest/fetch/1", User.class))
+	    Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class)))
 	           .thenReturn(user);
 
 	    // Create a mock Product object
@@ -206,7 +203,7 @@ public class CartItemServiceTest {
 	    user.setFirstname("Omm");
 
 	    // Mock the getForObject method to return the User object
-	    Mockito.when(restTemplate.getForObject("http://localhost:8080/login-rest/fetch/1", User.class))
+	    Mockito.when(restTemplate.getForObject(Mockito.anyString(), Mockito.eq(User.class)))
 	           .thenReturn(user);
 
 	    // Create a mock Product object

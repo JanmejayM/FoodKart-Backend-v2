@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -28,6 +29,9 @@ public class CartItemServiceImpl implements CartItemService {
 
 	@Autowired
 	RestTemplate restTemplate;
+	
+	@Value("${gatewayHost}")
+	private String gatewayHost;
 
 	@Override
 	public void updateQty(CartItem cartitem, int quantity) {
@@ -57,7 +61,7 @@ public class CartItemServiceImpl implements CartItemService {
 
 		logger.info("Inside  addProduct of CartItemServiceImpl");
 
-		user = restTemplate.getForObject("http://localhost:8080/login-rest/fetch/" + String.valueOf(id), User.class);
+		user = restTemplate.getForObject(gatewayHost+"/login-rest/fetch/" + String.valueOf(id), User.class);
 
 		if (user.getFirstname() == null) {
 			logger.warn("Invalid User ");
@@ -100,7 +104,7 @@ public class CartItemServiceImpl implements CartItemService {
 
 		try {
 
-			user = restTemplate.getForObject("http://localhost:8080/login-rest/fetch/" + String.valueOf(id),
+			user = restTemplate.getForObject(gatewayHost+"/login-rest/fetch/" + String.valueOf(id),
 					User.class);
 			cartitemdao.findAllByuseridandInorder(id, false).stream().forEach(cartitem -> ls.add(cartitem));
 		} catch (Exception ex) {
@@ -123,7 +127,7 @@ public class CartItemServiceImpl implements CartItemService {
 		User user = new User();
 		logger.info("Inside Inside OnCheckout of CartItemServiceImpl");
 
-		user = restTemplate.getForObject("http://localhost:8080/login-rest/fetch/" + String.valueOf(id), User.class);
+		user = restTemplate.getForObject(gatewayHost+"/login-rest/fetch/" + String.valueOf(id), User.class);
 
 		if (user.getFirstname() == null) {
 
