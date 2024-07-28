@@ -103,8 +103,8 @@ services:
       - RABBITMQ_QUEUE_NAME=bill_email
       - RABBITMQ_EXCHANGE_NAME=bill_email_exchange
       - RABBITMQ_ROUTING_KEY=bill_email_routing_key
-      - SPRING_MAIL_USERNAME=yobro2691@gmail.com
-      - SPRING_MAIL_PASSWORD=fajzcnxdhlmmgudq
+      - SPRING_MAIL_USERNAME=mail
+      - SPRING_MAIL_PASSWORD=pass
       - SPRING_RABBITMQ_HOST=rabbitmq
 
 
