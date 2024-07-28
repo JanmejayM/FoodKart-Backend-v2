@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpMethod;
@@ -40,6 +41,9 @@ public class OrderController {
 	
 	@Autowired
 	RabbitMQProducer producer;
+	
+	@Value("${gatewayHost}")
+	private String gatewayHost;
 
 	private static final Logger logger = LogManager.getLogger(OrderController.class);
 
@@ -77,7 +81,7 @@ public class OrderController {
 			throw new OrderNotFoundException("Invalid Address");
 		}
 
-		String url = "http://localhost:8081/cartitem-rest/fetchCart/" + String.valueOf(id);
+		String url = gatewayHost+"/cartitem-rest/fetchCart/" + String.valueOf(id);
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<List<CartItem>> response = restTemplate.exchange(url, HttpMethod.GET, null,
 				new ParameterizedTypeReference<List<CartItem>>() {
