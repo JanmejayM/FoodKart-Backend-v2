@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.util.stream.Stream;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -19,14 +21,17 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+@Component
 public class PDFGenerate {
+	
+
 
 	private static final org.slf4j.Logger log = LoggerFactory.getLogger(PDFGenerate.class);
 
-	public static void generate(Order order) throws FileNotFoundException, DocumentException {
+	public void generate(Order order,String path) throws FileNotFoundException, DocumentException {
 		log.info("in pdf generate -->" + order);
 		Document document = new Document();
-		PdfWriter.getInstance(document, new FileOutputStream("src/main/resources/FoodKartBill.pdf"));
+		PdfWriter.getInstance(document, new FileOutputStream(path));
 
 		document.open();
 		Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20, BaseColor.BLACK);

@@ -28,8 +28,14 @@ public class RabbitMQConsumer {
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
 	
+	@Autowired
+	private PDFGenerate pdfGenerate;
+	
 	@Value("${gatewayHost}")
 	private String gatewayHost;
+	
+	@Value("${file.location}")
+	private String fileLocation;
 
 
 	@Autowired
@@ -41,12 +47,13 @@ public class RabbitMQConsumer {
 	public void consume(Order order) throws IOException, DocumentException, MessagingException {
 		LOGGER.info(String.format("Received message -> %s", order));
 
-		PDFGenerate.generate(order);
+	
+				pdfGenerate.generate(order,fileLocation);
 		User user = restTemplate
 				.getForEntity(gatewayHost+"/login-rest/fetch/" + String.valueOf(order.getUserid()), User.class)
 				.getBody();
 		LOGGER.info(String.format("User -> %s", user));
-		String filePath="src/main/resources/FoodKartBill.pdf";
+		String filePath=fileLocation;
 		String orderId = String.valueOf(order.getId());
 		String subject = "FoodKart Bill Order Number : " + orderId;
 		String message = "Hi " + user.getFirstname() + " " + user.getLastname() + ",\n"
