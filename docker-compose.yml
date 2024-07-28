@@ -70,10 +70,8 @@ services:
     depends_on:
       mysqldb:
         condition: service_started
-
       rabbitmq:
         condition: service_started
-
 
     environment:
       - SPRING_PROFILES_ACTIVE=dev
@@ -84,7 +82,6 @@ services:
       - RABBITMQ_QUEUE_NAME=bill_email
       - RABBITMQ_EXCHANGE_NAME=bill_email_exchange
       - RABBITMQ_ROUTING_KEY=bill_email_routing_key
-
       - SPRING_RABBITMQ_HOST=rabbitmq
 
 
@@ -106,11 +103,9 @@ services:
       - RABBITMQ_QUEUE_NAME=bill_email
       - RABBITMQ_EXCHANGE_NAME=bill_email_exchange
       - RABBITMQ_ROUTING_KEY=bill_email_routing_key
-
       - SPRING_MAIL_USERNAME=mail
       - SPRING_MAIL_PASSWORD=pass
       - SPRING_RABBITMQ_HOST=rabbitmq
-
 
 
 
@@ -144,9 +139,7 @@ services:
     ports:
         - 5672:5672
         - 15672:15672
-
     
-
     networks:
         - springboot-mysql-network
 volumes:
