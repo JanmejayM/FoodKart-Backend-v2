@@ -1,0 +1,143 @@
+version: '3.7'
+services:
+  foodkart-reactv2-frontend:
+    image: janmejaym1/foodkart-reactv2-frontend
+    ports:
+      - 3000:3000
+    
+    networks:
+      - springboot-mysql-network
+   
+  server-registry:
+   image: janmejaym1/foodkart-server-registry
+   ports:
+      - 8761:8761
+      
+   networks:
+      - springboot-mysql-network
+   
+  api-gateway: 
+   image: janmejaym1/foodkart-api-gateway
+   ports:
+      - 8083:8083
+      
+   environment:
+        - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://server-registry:8761/eureka/
+  
+   networks:
+      - springboot-mysql-network
+      
+  product-service:
+    image: janmejaym1/foodkart-product-service
+    ports:
+      - 8081:8081
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/projectdb
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=12345
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://server-registry:8761/eureka/
+
+      
+    
+    networks:
+      - springboot-mysql-network
+   
+  user-service:
+    image: janmejaym1/foodkart-user-service
+    ports:
+      - 8080:8080
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/projectdb
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=12345
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://server-registry:8761/eureka/
+    
+    networks:
+      - springboot-mysql-network
+   
+  order-service:
+    image: janmejaym1/foodkart-order-service
+    ports:
+      - 8082:8082
+    depends_on:
+      mysqldb:
+        condition: service_started
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/projectdb
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=12345
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://server-registry:8761/eureka/
+      - RABBITMQ_QUEUE_NAME=bill_email
+      - RABBITMQ_EXCHANGE_NAME=bill_email_exchange
+      - RABBITMQ_ROUTING_KEY=bill_email_routing_key
+
+
+    
+    networks:
+      - springboot-mysql-network
+
+  bill-service:
+    image: janmejaym1/foodkart-bill-service
+    ports:
+      - 8084:8084
+    depends_on:
+     rabbitmq:
+      condition: service_started
+      
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - RABBITMQ_QUEUE_NAME=bill_email
+      - RABBITMQ_EXCHANGE_NAME=bill_email_exchange
+      - RABBITMQ_ROUTING_KEY=bill_email_routing_key
+      - SPRING_MAIL_USERNAME=enter your mail
+      - SPRING_MAIL_PASSWORD=enter your app password
+
+     
+    
+    networks:
+      - springboot-mysql-network
+   
+   
+      
+   
+  mysqldb:
+   image: mysql:8.0.33
+   ports:
+      - 3307:3306
+   environment:
+      - MYSQL_DATABASE=projectdb
+      - MYSQL_ROOT_PASSWORD=12345
+   volumes:
+      - mysql-data:/var/lib/mysql
+   networks:
+      - springboot-mysql-network
+   healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      retries: 10
+      interval: 3s
+      timeout: 30s
+      
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+        - springboot-mysql-network
+volumes:
+  mysql-data:
+networks:
+  springboot-mysql-network:
+    name: springboot-mysql-network
