@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,6 +27,10 @@ public class RabbitMQConsumer {
 
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
+	
+	@Value("${gatewayHost}")
+	private String gatewayHost;
+
 
 	@Autowired
 	EmailSenderService emailSenderService;
@@ -38,7 +43,7 @@ public class RabbitMQConsumer {
 
 		PDFGenerate.generate(order);
 		User user = restTemplate
-				.getForEntity("http://localhost:8083/login-rest/fetch/" + String.valueOf(order.getUserid()), User.class)
+				.getForEntity(gatewayHost+"/login-rest/fetch/" + String.valueOf(order.getUserid()), User.class)
 				.getBody();
 		LOGGER.info(String.format("User -> %s", user));
 		String filePath="src/main/resources/FoodKartBill.pdf";
