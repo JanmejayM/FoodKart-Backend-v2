@@ -30,7 +30,7 @@ public class ApiGatewayApplication {
 	@Bean
 	public CorsWebFilter corsWebFilter() {
 		CorsConfiguration corsConfig = new CorsConfiguration();
-		corsConfig.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+		corsConfig.setAllowedOrigins(Collections.singletonList("*"));
 		corsConfig.addAllowedMethod(HttpMethod.GET);
 		corsConfig.addAllowedMethod(HttpMethod.POST);
 		corsConfig.addAllowedMethod(HttpMethod.PUT);
